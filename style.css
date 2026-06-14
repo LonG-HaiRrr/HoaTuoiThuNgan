@@ -145,7 +145,7 @@ h1, h2, h3, h4, .logo a {
     background-color: var(--dark);
 }
 
-/* --- Hero Banner & Hiệu ứng Zoom mặc định trên Desktop --- */
+/* --- HỆ THỐNG BANNER SLIDESHOW ZOOM-IN (ÁP DỤNG ĐỒNG BỘ PC & MOBILE) --- */
 .hero {
     position: relative;
     height: 100vh;
@@ -157,25 +157,51 @@ h1, h2, h3, h4, .logo a {
     overflow: hidden;
 }
 
-.hero-bg {
+.hero-slider {
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-image: url('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1920&q=80');
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: -2;
+}
+
+.hero-slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     background-size: cover;
     background-position: center;
-    z-index: -2;
+    opacity: 0;
+    /* Hiệu ứng mờ chồng giữa ảnh cũ và ảnh mới cực mượt */
+    transition: opacity 1.8s ease-in-out; 
+}
+
+/* Khi slide được kích hoạt active */
+.hero-slide.active {
+    opacity: 1;
+    /* Chạy zoom từ 1 đến 1.18 rồi kết thúc bằng lệnh 'forwards' để giữ nguyên, ko zoom-out giật lùi */
+    animation: continuousKenBurns 7.5s ease-in-out forwards;
+}
+
+@keyframes continuousKenBurns {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.18); /* Tốc độ giữ nguyên phóng to chuẩn mẫu */
+    }
 }
 
 .hero-overlay {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.7));
+    background: linear-gradient(to bottom, rgba(0,0,0,0.45), rgba(0,0,0,0.65));
     z-index: -1;
 }
 
 .hero-content {
     max-width: 800px;
     padding: 0 20px;
+    z-index: 2;
 }
 
 .hero-subtitle {
@@ -236,7 +262,6 @@ h1, h2, h3, h4, .logo a {
     background-color: var(--gold);
     margin: 20px 0;
 }
-
 .gold-divider.center { margin: 20px auto; }
 
 /* --- Section Giới Thiệu (About) --- */
@@ -245,16 +270,11 @@ h1, h2, h3, h4, .logo a {
     align-items: center;
     gap: 60px;
 }
-
 .about-text { flex: 1; }
 .about-text h2 { font-size: 38px; color: var(--dark); }
 .highlight-text { font-size: 18px; font-weight: 500; color: var(--dark-light); margin-bottom: 15px; }
 
-.about-stats {
-    display: flex;
-    gap: 30px;
-}
-
+.about-stats { display: flex; gap: 30px; }
 .stat-box {
     background-color: var(--light);
     border: 1px solid rgba(212,175,55,0.2);
@@ -264,13 +284,11 @@ h1, h2, h3, h4, .logo a {
     min-width: 180px;
     transition: var(--transition);
 }
-
 .stat-box:hover {
     border-color: var(--gold);
     background-color: var(--white);
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
-
 .stat-box h3 { font-size: 45px; color: var(--gold); margin-bottom: 5px; }
 
 /* --- Section Dịch vụ (Services) --- */
@@ -280,7 +298,6 @@ h1, h2, h3, h4, .logo a {
     gap: 30px;
     margin-top: 50px;
 }
-
 .service-card {
     background-color: var(--white);
     padding: 40px 30px;
@@ -291,23 +308,16 @@ h1, h2, h3, h4, .logo a {
     position: relative;
     top: 0;
 }
-
 .service-card:hover {
     top: -10px;
     box-shadow: 0 15px 40px rgba(0,0,0,0.08);
     border-color: rgba(212,175,55,0.3);
 }
-
-.card-icon {
-    font-size: 35px;
-    color: var(--gold);
-    margin-bottom: 20px;
-}
-
+.card-icon { font-size: 35px; color: var(--gold); margin-bottom: 20px; }
 .service-card h3 { font-size: 20px; margin-bottom: 15px; letter-spacing: 1px; }
 .service-card p { color: var(--gray); font-size: 15px; }
 
-/* --- Section Liên Hệ & Form Form Đẹp --- */
+/* --- Section Liên Hệ & Form Form --- */
 .contact-box {
     display: grid;
     grid-template-columns: 1fr 1.2fr;
@@ -317,33 +327,22 @@ h1, h2, h3, h4, .logo a {
     overflow: hidden;
     box-shadow: 0 20px 50px rgba(0,0,0,0.15);
 }
-
 .contact-info {
     padding: 60px;
     background-image: linear-gradient(135deg, rgba(0,0,0,0.2), rgba(0,0,0,0.4));
     border-right: 1px solid rgba(255,255,255,0.05);
 }
-
 .contact-info h2 { font-size: 36px; margin-bottom: 20px; color: var(--gold); }
 .contact-info p { color: #ccc; margin-bottom: 40px; }
-
-.info-item {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 25px;
-}
-
+.info-item { display: flex; align-items: center; gap: 20px; margin-bottom: 25px; }
 .info-item i { font-size: 20px; color: var(--gold); }
 
 .contact-form-container { padding: 60px; background-color: #242424; }
 
-/* Form hiệu ứng floating label */
 .form-group {
     position: relative;
     margin-bottom: 30px;
 }
-
 .form-group input, .form-group textarea {
     width: 100%;
     padding: 12px 0;
@@ -355,7 +354,6 @@ h1, h2, h3, h4, .logo a {
     outline: none;
     transition: var(--transition);
 }
-
 .form-group label {
     position: absolute;
     top: 12px; left: 0;
@@ -363,12 +361,7 @@ h1, h2, h3, h4, .logo a {
     pointer-events: none;
     transition: var(--transition);
 }
-
-.form-group input:focus, .form-group textarea:focus {
-    border-bottom-color: var(--gold);
-}
-
-/* Trạng thái dữ liệu đã nhập giữ nguyên label ở trên */
+.form-group input:focus, .form-group textarea:focus { border-bottom-color: var(--gold); }
 .form-group input:focus ~ label, .form-group input:not(:placeholder-shown) ~ label,
 .form-group textarea:focus ~ label, .form-group textarea:not(:placeholder-shown) ~ label {
     top: -12px;
@@ -388,7 +381,6 @@ h1, h2, h3, h4, .logo a {
     border-radius: 4px;
     transition: var(--transition);
 }
-
 .btn-submit:hover { background-color: var(--gold-hover); }
 
 /* --- Footer --- */
@@ -404,27 +396,8 @@ h1, h2, h3, h4, .logo a {
 .footer-links a:hover { color: var(--white); padding-left: 5px; }
 .footer-bottom { margin-top: 40px; padding-top: 20px; border-top: 1px solid #222; color: #555; font-size: 14px; }
 
-
-/* ==========================================================================
-   XỬ LÝ ĐỘC QUYỀN TRÊN GIAO DIỆN ĐIỆN THOẠI/MÁY TÍNH BẢNG (MAX-WIDTH: 1000PX)
-   ========================================================================== */
+/* --- Reponsive Tablet / Mobile --- */
 @media (max-width: 1000px) {
-    /* --- Kích hoạt Hiệu ứng Zoom-in (Ken Burns) cho Ảnh nền Hero --- */
-    .hero-bg {
-        animation: mobileKenBurns 12s ease-in-out infinite alternate;
-        transform-origin: center center;
-    }
-
-    @keyframes mobileKenBurns {
-        0% {
-            transform: scale(1);
-        }
-        100% {
-            transform: scale(1.18); /* Room-in mượt mà lên 18% */
-        }
-    }
-
-    /* --- Responsive cấu trúc các Section --- */
     .hero-title { font-size: 38px; }
     .about-wrapper { flex-direction: column; gap: 40px; }
     .about-stats { width: 100%; justify-content: center; }
@@ -432,21 +405,15 @@ h1, h2, h3, h4, .logo a {
     .contact-info { padding: 40px; }
     .contact-form-container { padding: 40px; }
 
-    /* --- Hệ thống Menu Mobile trượt ra linh hoạt --- */
     .menu-toggle { display: block; z-index: 1010; }
-    
-    /* Chuyển đổi nút thành dấu X khi kích hoạt menu */
     .menu-toggle.is-active .bar:nth-child(2) { opacity: 0; }
     .menu-toggle.is-active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
     .menu-toggle.is-active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
     .navbar {
         position: fixed;
-        top: 0;
-        right: -100%; /* Giấu menu sang phải màn hình */
-        height: 100vh;
-        width: 75%;
-        max-width: 300px;
+        top: 0; right: -100%;
+        height: 100vh; width: 75%; max-width: 300px;
         background-color: var(--white);
         flex-direction: column;
         justify-content: center;
@@ -454,11 +421,7 @@ h1, h2, h3, h4, .logo a {
         transition: 0.5s cubic-bezier(0.25, 1, 0.5, 1);
         z-index: 1005;
     }
-
-    .navbar.active {
-        right: 0; /* Đẩy menu trượt vào trong màn hình */
-    }
-
+    .navbar.active { right: 0; }
     .nav-link { font-size: 16px; width: 100%; text-align: center; padding: 15px 0; }
     .btn-nav { width: 80%; text-align: center; margin-top: 20px; }
 }

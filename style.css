@@ -55,16 +55,22 @@ h1, h2, h3, h4, .logo a {
     transform: translateY(0);
 }
 
-/* --- Thanh Header / Navigation --- */
+/* --- Thanh Header / Navigation (Đã sửa thành Trong suốt) --- */
 .header {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 1000;
+    background-color: transparent; /* Ban đầu trong suốt */
+    box-shadow: none; /* Bỏ shadow ban đầu */
+    transition: var(--transition);
+}
+
+/* Khi cuộn trang sẽ thêm class .scrolled */
+.header.scrolled {
     background-color: rgba(255, 255, 255, 0.95);
     box-shadow: 0 2px 20px rgba(0,0,0,0.05);
-    transition: var(--transition);
     backdrop-filter: blur(5px);
 }
 
@@ -75,28 +81,29 @@ h1, h2, h3, h4, .logo a {
     padding: 15px 24px;
 }
 
+/* Màu chữ mặc định (trong suốt) là Trắng */
+.logo a, .nav-link {
+    color: var(--white);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
 .logo a {
     font-size: 28px;
-    color: var(--dark);
-    text-decoration: none;
     letter-spacing: 2px;
 }
 
-.navbar {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-}
-
 .nav-link {
-    text-decoration: none;
-    color: var(--dark);
     font-size: 14px;
     font-weight: 500;
     letter-spacing: 1px;
     position: relative;
     padding: 5px 0;
-    transition: var(--transition);
+}
+
+/* Đổi màu chữ sang tối khi header cuộn */
+.header.scrolled .logo a, .header.scrolled .nav-link {
+    color: var(--dark);
 }
 
 .nav-link::after {
@@ -111,24 +118,34 @@ h1, h2, h3, h4, .logo a {
 }
 
 .nav-link:hover { color: var(--gold); }
+.header.scrolled .nav-link:hover { color: var(--gold); }
 .nav-link:hover::after { width: 100%; }
 
+/* Nút đặt tiệc trên Menu */
 .btn-nav {
     text-decoration: none;
-    background-color: var(--dark);
-    color: var(--white);
+    background-color: var(--white);
+    color: var(--dark);
     padding: 10px 22px;
     font-size: 13px;
     font-weight: 600;
     border-radius: 4px;
     transition: var(--transition);
-    border: 1px solid var(--dark);
+    border: 1px solid var(--white);
+}
+.header.scrolled .btn-nav {
+    background-color: var(--dark);
+    color: var(--white);
+    border-color: var(--dark);
 }
 
 .btn-nav:hover {
     background-color: transparent;
+    color: var(--white);
+}
+.header.scrolled .btn-nav:hover {
+    background-color: transparent;
     color: var(--dark);
-    border-color: var(--dark);
 }
 
 .menu-toggle {
@@ -142,10 +159,13 @@ h1, h2, h3, h4, .logo a {
     height: 3px;
     margin: 5px auto;
     transition: var(--transition);
+    background-color: var(--white);
+}
+.header.scrolled .menu-toggle .bar {
     background-color: var(--dark);
 }
 
-/* --- HỆ THỐNG BANNER SLIDESHOW ZOOM-IN (ÁP DỤNG ĐỒNG BỘ PC & MOBILE) --- */
+/* --- HỆ THỐNG BANNER SLIDESHOW ZOOM-IN --- */
 .hero {
     position: relative;
     height: 100vh;
@@ -171,24 +191,17 @@ h1, h2, h3, h4, .logo a {
     background-size: cover;
     background-position: center;
     opacity: 0;
-    /* Hiệu ứng mờ chồng giữa ảnh cũ và ảnh mới cực mượt */
     transition: opacity 1.8s ease-in-out; 
 }
 
-/* Khi slide được kích hoạt active */
 .hero-slide.active {
     opacity: 1;
-    /* Chạy zoom từ 1 đến 1.18 rồi kết thúc bằng lệnh 'forwards' để giữ nguyên, ko zoom-out giật lùi */
     animation: continuousKenBurns 7.5s ease-in-out forwards;
 }
 
 @keyframes continuousKenBurns {
-    0% {
-        transform: scale(1);
-    }
-    100% {
-        transform: scale(1.18); /* Tốc độ giữ nguyên phóng to chuẩn mẫu */
-    }
+    0% { transform: scale(1); }
+    100% { transform: scale(1.18); }
 }
 
 .hero-overlay {
@@ -219,6 +232,37 @@ h1, h2, h3, h4, .logo a {
     line-height: 1.2;
 }
 
+/* --- Hiệu ứng chữ chạy lên từ dưới (Hero Animation) --- */
+.slide-up-item, .slide-up-separator {
+    display: inline-block;
+    opacity: 0; /* Mặc định ẩn */
+    transform: translateY(30px);
+}
+
+.slide-up-separator {
+    margin: 0 10px;
+}
+
+/* Khi có class animate (được thêm bằng JS) thì mới chạy */
+.hero-title.animate .slide-up-item, 
+.hero-title.animate .slide-up-separator {
+    animation: slideUpFade 0.6s ease forwards;
+}
+
+/* Độ trễ của từng cụm từ */
+.hero-title.animate .slide-up-item:nth-child(1) { animation-delay: 0.1s; }
+.hero-title.animate .slide-up-separator:nth-child(2) { animation-delay: 0.2s; }
+.hero-title.animate .slide-up-item:nth-child(3) { animation-delay: 0.3s; }
+.hero-title.animate .slide-up-separator:nth-child(4) { animation-delay: 0.4s; }
+.hero-title.animate .slide-up-item:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes slideUpFade {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .hero-desc {
     font-size: 18px;
     font-weight: 300;
@@ -243,6 +287,127 @@ h1, h2, h3, h4, .logo a {
     background-color: transparent;
     color: var(--gold);
     transform: translateY(-3px);
+}
+
+/* --- FLOATING BUTTONS (NÚT LIÊN HỆ GÓC PHẢI) --- */
+.floating-buttons {
+    position: fixed;
+    right: 25px;
+    bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 9999;
+}
+
+.float-btn {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    position: relative;
+    /* Hiệu ứng bong bóng (trôi lên xuống) */
+    animation: bobbing 2.5s infinite alternate ease-in-out;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Khi di chuột vào thì đứng yên */
+.float-btn:hover {
+    animation-play-state: paused;
+}
+
+/* Màu sắc các nút giống hình mẫu */
+.btn-booking { background-color: #ef5350; } /* Đỏ san hô */
+.btn-call { background-color: #388e3c; } /* Xanh lá */
+.btn-zalo { background-color: #29b6f6; } /* Xanh lơ */
+.btn-fb { background-color: #1976d2; } /* Xanh biển */
+
+/* Chỉnh logo text Zalo cho giống icon chat */
+.zalo-text {
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 13px;
+    background: white;
+    color: #29b6f6;
+    padding: 3px 6px;
+    border-radius: 8px 8px 8px 2px; /* Tạo hình bubble */
+    line-height: 1;
+}
+
+/* Lệch nhịp animation để các nút trôi không cùng lúc */
+.float-btn:nth-child(1) { animation-delay: 0s; }
+.float-btn:nth-child(2) { animation-delay: 0.3s; }
+.float-btn:nth-child(3) { animation-delay: 0.6s; }
+.float-btn:nth-child(4) { animation-delay: 0.9s; }
+
+@keyframes bobbing {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-12px); }
+}
+
+/* TOOLTIP KHI HOVER */
+.float-btn::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    right: 70px; /* Cách nút 1 đoạn */
+    background-color: rgba(30, 30, 30, 0.9);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Roboto', sans-serif;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s ease;
+    white-space: nowrap;
+    border: 1px solid #444;
+}
+/* Mũi tên nhỏ của tooltip */
+.float-btn::after {
+    content: '';
+    position: absolute;
+    right: 64px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent transparent transparent rgba(30, 30, 30, 0.9);
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s ease;
+}
+
+.float-btn:hover::before,
+.float-btn:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Hiệu ứng gợn sóng (Ripple) cho nút Đặt Bàn (Nút đỏ) */
+.btn-booking::first-child::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #ef5350;
+    z-index: -1;
+    animation: ripple 1.5s infinite ease-out;
+}
+@keyframes ripple {
+    0% { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(1.6); opacity: 0; }
+}
+/* Ẩn ripple khi hover để nó đứng im như bạn yêu cầu */
+.btn-booking:hover::first-child::after {
+    animation: none;
+    display: none;
 }
 
 /* --- Các thành phần trang trí chung --- */
@@ -339,47 +504,26 @@ h1, h2, h3, h4, .logo a {
 
 .contact-form-container { padding: 60px; background-color: #242424; }
 
-.form-group {
-    position: relative;
-    margin-bottom: 30px;
-}
+.form-group { position: relative; margin-bottom: 30px; }
 .form-group input, .form-group textarea {
-    width: 100%;
-    padding: 12px 0;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid #555;
-    color: var(--white);
-    font-size: 16px;
-    outline: none;
-    transition: var(--transition);
+    width: 100%; padding: 12px 0; background: transparent; border: none;
+    border-bottom: 1px solid #555; color: var(--white); font-size: 16px;
+    outline: none; transition: var(--transition);
 }
 .form-group label {
-    position: absolute;
-    top: 12px; left: 0;
-    color: #888;
-    pointer-events: none;
-    transition: var(--transition);
+    position: absolute; top: 12px; left: 0; color: #888;
+    pointer-events: none; transition: var(--transition);
 }
 .form-group input:focus, .form-group textarea:focus { border-bottom-color: var(--gold); }
 .form-group input:focus ~ label, .form-group input:not(:placeholder-shown) ~ label,
 .form-group textarea:focus ~ label, .form-group textarea:not(:placeholder-shown) ~ label {
-    top: -12px;
-    font-size: 12px;
-    color: var(--gold);
+    top: -12px; font-size: 12px; color: var(--gold);
 }
 
 .btn-submit {
-    width: 100%;
-    padding: 15px;
-    background-color: var(--gold);
-    border: none;
-    color: var(--white);
-    font-weight: 700;
-    letter-spacing: 1px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: var(--transition);
+    width: 100%; padding: 15px; background-color: var(--gold); border: none;
+    color: var(--white); font-weight: 700; letter-spacing: 1px; cursor: pointer;
+    border-radius: 4px; transition: var(--transition);
 }
 .btn-submit:hover { background-color: var(--gold-hover); }
 
@@ -422,6 +566,11 @@ h1, h2, h3, h4, .logo a {
         z-index: 1005;
     }
     .navbar.active { right: 0; }
-    .nav-link { font-size: 16px; width: 100%; text-align: center; padding: 15px 0; }
-    .btn-nav { width: 80%; text-align: center; margin-top: 20px; }
+    .nav-link { font-size: 16px; width: 100%; text-align: center; padding: 15px 0; color: var(--dark) !important; }
+    .btn-nav { width: 80%; text-align: center; margin-top: 20px; background-color: var(--dark) !important; color: white !important;}
+    
+    /* Thu gọn floating buttons trên Mobile */
+    .floating-buttons { right: 15px; bottom: 15px; }
+    .float-btn { width: 45px; height: 45px; font-size: 20px; }
+    .float-btn::before { display: none; } /* Tắt tooltip trên điện thoại để đỡ vướng */
 }

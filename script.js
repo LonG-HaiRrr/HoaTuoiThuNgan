@@ -1,43 +1,62 @@
 document.addEventListener("DOMContentLoaded", function() {
 
     // =========================================================================
-    // 1. THUẬT TOÁN AUTO-DETECT ẢNH (KHÔNG CẦN KHAI BÁO SỐ LƯỢNG)
-    // Cách dùng: Đổi tên tất cả ảnh thành banner (1).jpg, banner (2).jpg...
-    // Script sẽ tự động dò tìm đến khi hết ảnh thì thôi.
+    // 0. XỬ LÝ HEADER TRONG SUỐT KHI CUỘN TRANG
     // =========================================================================
-    
+    const header = document.getElementById('main-header');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+
+    // Hàm gọi để chạy Animation cho cụm từ "Chuyên Nghiệp - Tận Tâm - Chu Đáo"
+    function triggerTitleAnimation() {
+        const title = document.getElementById('animated-title');
+        if(!title) return;
+        
+        // Reset lại animation bằng cách gỡ bỏ class rồi ép trình duyệt reflow
+        title.classList.remove('animate');
+        void title.offsetWidth; // Ép reflow
+        title.classList.add('animate');
+    }
+
+    // =========================================================================
+    // 1. THUẬT TOÁN AUTO-DETECT ẢNH VÀ SLIDER
+    // =========================================================================
     const sliderContainer = document.getElementById('hero-slider');
     let validImages = [];
     let checkIndex = 1;
-    const maxCheck = 30; // Quét tối đa 30 ảnh để tránh treo trình duyệt
+    const maxCheck = 30;
 
     function loadDynamicImages() {
         if (checkIndex > maxCheck) {
-            initSlider(); // Dừng quét nếu vượt quá 30 ảnh
+            initSlider();
             return;
         }
 
         let img = new Image();
         img.onload = function() {
-            // Nếu ảnh tồn tại, đưa vào mảng và tiếp tục quét số tiếp theo
             validImages.push(`img/b (${checkIndex}).jpg`);
             checkIndex++;
             loadDynamicImages();
         };
         img.onerror = function() {
-            // Nếu lỗi (nghĩa là đã hết ảnh ở thư mục), lập tức khởi chạy Slider
             initSlider();
         };
         img.src = `img/b (${checkIndex}).jpg`;
     }
 
-    // Bắt đầu quá trình dò tìm ngay khi tải trang
     loadDynamicImages();
 
     function initSlider() {
-        if (validImages.length === 0) return; // Không có ảnh nào thì bỏ qua
+        // Chạy animation text ngay lần load đầu tiên
+        triggerTitleAnimation();
 
-        // Sinh HTML cho từng ảnh tìm được
+        if (validImages.length === 0) return;
+
         validImages.forEach((src, index) => {
             const slide = document.createElement('div');
             slide.className = 'hero-slide' + (index === 0 ? ' active' : '');
@@ -45,28 +64,28 @@ document.addEventListener("DOMContentLoaded", function() {
             sliderContainer.appendChild(slide);
         });
 
-        // Nếu có từ 2 ảnh trở lên thì thiết lập vòng lặp chuyển đổi
         if (validImages.length > 1) {
             let currentSlideIndex = 0;
             const slides = document.querySelectorAll('.hero-slide');
             
-            // THỜI GIAN ĐỔI ẢNH: Đã chỉnh xuống 4 giây (4000ms) để khớp với tốc độ zoom 5 giây của CSS
             const slideIntervalTime = 4000; 
 
             setInterval(() => {
                 slides[currentSlideIndex].classList.remove('active');
                 currentSlideIndex = (currentSlideIndex + 1) % slides.length;
                 slides[currentSlideIndex].classList.add('active');
+                
+                // MỖI LẦN ĐỔI ẢNH -> KÍCH HOẠT LẠI ANIMATION CHỮ TỪ DƯỚI LÊN
+                triggerTitleAnimation();
+                
             }, slideIntervalTime);
         }
     }
 
 
     // =========================================================================
-    // CÁC CHỨC NĂNG CÒN LẠI GIỮ NGUYÊN
+    // 2. HIỆU ỨNG CUỘN TRANG XUẤT HIỆN DẦN (SCROLL REVEAL)
     // =========================================================================
-
-    // 2. HIỆU ỨNG CUỘN TRANG XUẤT HIỆN DẦN
     const revealElements = document.querySelectorAll(".reveal");
     function checkReveal() {
         const triggerBottom = window.innerHeight * 0.85;
@@ -80,7 +99,9 @@ document.addEventListener("DOMContentLoaded", function() {
     window.addEventListener("scroll", checkReveal);
     checkReveal();
 
+    // =========================================================================
     // 3. ĐÓNG MỞ MENU TRÊN THIẾT BỊ DI ĐỘNG
+    // =========================================================================
     const menuToggle = document.getElementById("mobile-menu");
     const navbar = document.querySelector(".navbar");
     const navLinks = document.querySelectorAll(".nav-link, .btn-nav");
@@ -89,6 +110,8 @@ document.addEventListener("DOMContentLoaded", function() {
         menuToggle.addEventListener("click", function() {
             menuToggle.classList.toggle("is-active");
             navbar.classList.toggle("active");
+            // Ép đổi màu toggle cho dễ nhìn khi mở menu
+            header.classList.add('scrolled');
         });
     }
     navLinks.forEach(link => {
@@ -98,7 +121,9 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // 4. XỬ LÝ GỬI FORM THÔNG TIN (Cấu hình link App Script của bạn ở đây)
+    // =========================================================================
+    // 4. XỬ LÝ GỬI FORM THÔNG TIN 
+    // =========================================================================
     const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
     const form = document.getElementById('booking-sheet-form');
     const submitBtn = document.getElementById('submit-btn');

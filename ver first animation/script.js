@@ -13,36 +13,15 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // Hàm gọi để chạy Animation cho cụm từ "Chuyên Nghiệp - Tận Tâm - Chu Đáo"
-    // --- ĐOẠN CODE MỚI: TỰ ĐỘNG TÁCH TỪNG CHỮ CÁI ---
-    const titleElement = document.getElementById('animated-title');
-    if (titleElement) {
-        const text = titleElement.innerText;
-        titleElement.innerHTML = ''; // Xóa text cũ
-        
-        // Tách chuỗi thành mảng các ký tự
-        text.split('').forEach((char, index) => {
-            const span = document.createElement('span');
-            // Nếu là dấu cách thì dùng khoảng trắng không ngắt dòng
-            span.innerText = char === ' ' ? '\u00A0' : char; 
-            span.className = 'letter-anim';
-            // Cài đặt độ trễ (delay) cho mỗi chữ cái cách nhau 0.05 giây
-            span.style.animationDelay = `${index * 0.05}s`; 
-            titleElement.appendChild(span);
-        });
-    }
-
-    // Hàm gọi để chạy Animation cho Title (Sửa lại một chút)
     function triggerTitleAnimation() {
         const title = document.getElementById('animated-title');
         if(!title) return;
         
+        // Reset lại animation bằng cách gỡ bỏ class rồi ép trình duyệt reflow
         title.classList.remove('animate');
         void title.offsetWidth; // Ép reflow
         title.classList.add('animate');
     }
-
-
-
 
     // =========================================================================
     // 1. THUẬT TOÁN AUTO-DETECT ẢNH VÀ SLIDER
